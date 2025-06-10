@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "F:\\Progra\\webapi\\workstation-backend\\workstation-backend\\workstation-backend.csproj": {}
+    "H:\\WebApi\\backeend\\workstation-backend.csproj": {}
   },
   "projects": {
-    "F:\\Progra\\webapi\\workstation-backend\\workstation-backend\\workstation-backend.csproj": {
+    "H:\\WebApi\\backeend\\workstation-backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Progra\\webapi\\workstation-backend\\workstation-backend\\workstation-backend.csproj",
+        "projectUniqueName": "H:\\WebApi\\backeend\\workstation-backend.csproj",
         "projectName": "workstation-backend",
-        "projectPath": "F:\\Progra\\webapi\\workstation-backend\\workstation-backend\\workstation-backend.csproj",
+        "projectPath": "H:\\WebApi\\backeend\\workstation-backend.csproj",
         "packagesPath": "C:\\Users\\51924\\.nuget\\packages\\",
-        "outputPath": "F:\\Progra\\webapi\\workstation-backend\\workstation-backend\\obj\\",
+        "outputPath": "H:\\WebApi\\backeend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\51924\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -63,6 +63,10 @@
             "MySql.Data": {
               "target": "Package",
               "version": "[9.3.0, )"
+            },
+            "MySql.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[9.0.3, )"
             }
           },
           "imports": [

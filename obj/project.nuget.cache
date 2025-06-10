@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "xPi0dWWzEis=",
+  "dgSpecHash": "l8BxwGgo8Jg=",
   "success": true,
-  "projectFilePath": "F:\\Progra\\webapi\\workstation-backend\\workstation-backend\\workstation-backend.csproj",
+  "projectFilePath": "H:\\WebApi\\backeend\\workstation-backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\51924\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",
     "C:\\Users\\51924\\.nuget\\packages\\google.protobuf\\3.30.0\\google.protobuf.3.30.0.nupkg.sha512",
@@ -104,6 +104,7 @@
     "C:\\Users\\51924\\.nuget\\packages\\microsoft.visualstudio.web.codegenerators.mvc\\9.0.0\\microsoft.visualstudio.web.codegenerators.mvc.9.0.0.nupkg.sha512",
     "C:\\Users\\51924\\.nuget\\packages\\mono.texttemplating\\3.0.0\\mono.texttemplating.3.0.0.nupkg.sha512",
     "C:\\Users\\51924\\.nuget\\packages\\mysql.data\\9.3.0\\mysql.data.9.3.0.nupkg.sha512",
+    "C:\\Users\\51924\\.nuget\\packages\\mysql.entityframeworkcore\\9.0.3\\mysql.entityframeworkcore.9.0.3.nupkg.sha512",
     "C:\\Users\\51924\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
     "C:\\Users\\51924\\.nuget\\packages\\nuget.common\\6.11.0\\nuget.common.6.11.0.nupkg.sha512",
     "C:\\Users\\51924\\.nuget\\packages\\nuget.configuration\\6.11.0\\nuget.configuration.6.11.0.nupkg.sha512",

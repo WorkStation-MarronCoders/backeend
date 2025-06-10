@@ -1844,6 +1844,24 @@
           }
         }
       },
+      "MySql.EntityFrameworkCore/9.0.3": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "9.0.3",
+          "Microsoft.EntityFrameworkCore.Relational": "9.0.3",
+          "MySql.Data": "9.3.0"
+        },
+        "compile": {
+          "lib/net9.0/MySql.EntityFrameworkCore.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/MySql.EntityFrameworkCore.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Newtonsoft.Json/13.0.3": {
         "type": "package",
         "compile": {
@@ -5650,6 +5668,25 @@
         "runtimes/win-x64/native/krbcc64.dll"
       ]
     },
+    "MySql.EntityFrameworkCore/9.0.3": {
+      "sha512": "xtWL0Kglhpl5FuK8/iDjHL6Z954fpr8Hi11nyuIEjClGX61zD6tVUtlbaAReiGSYhtBZAXEG5O7FYKy44QzhFw==",
+      "type": "package",
+      "path": "mysql.entityframeworkcore/9.0.3",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "README",
+        "README.md",
+        "lib/net8.0/MySql.EntityFrameworkCore.dll",
+        "lib/net8.0/MySql.EntityFrameworkCore.xml",
+        "lib/net9.0/MySql.EntityFrameworkCore.dll",
+        "lib/net9.0/MySql.EntityFrameworkCore.xml",
+        "logo-mysql-170x115.png",
+        "mysql.entityframeworkcore.9.0.3.nupkg.sha512",
+        "mysql.entityframeworkcore.nuspec"
+      ]
+    },
     "Newtonsoft.Json/13.0.3": {
       "sha512": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
       "type": "package",
@@ -7217,7 +7254,8 @@
       "Microsoft.EntityFrameworkCore >= 9.0.5",
       "Microsoft.EntityFrameworkCore.Relational >= 9.0.5",
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 9.0.0",
-      "MySql.Data >= 9.3.0"
+      "MySql.Data >= 9.3.0",
+      "MySql.EntityFrameworkCore >= 9.0.3"
     ]
   },
   "packageFolders": {
@@ -7226,11 +7264,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\Progra\\webapi\\workstation-backend\\workstation-backend\\workstation-backend.csproj",
+      "projectUniqueName": "H:\\WebApi\\backeend\\workstation-backend.csproj",
       "projectName": "workstation-backend",
-      "projectPath": "F:\\Progra\\webapi\\workstation-backend\\workstation-backend\\workstation-backend.csproj",
+      "projectPath": "H:\\WebApi\\backeend\\workstation-backend.csproj",
       "packagesPath": "C:\\Users\\51924\\.nuget\\packages\\",
-      "outputPath": "F:\\Progra\\webapi\\workstation-backend\\workstation-backend\\obj\\",
+      "outputPath": "H:\\WebApi\\backeend\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\51924\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -7282,6 +7320,10 @@
           "MySql.Data": {
             "target": "Package",
             "version": "[9.3.0, )"
+          },
+          "MySql.EntityFrameworkCore": {
+            "target": "Package",
+            "version": "[9.0.3, )"
           }
         },
         "imports": [
