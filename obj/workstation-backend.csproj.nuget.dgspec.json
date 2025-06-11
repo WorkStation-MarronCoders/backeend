@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "H:\\WebApi\\backeend\\workstation-backend.csproj": {}
+    "F:\\backeend\\workstation-backend.csproj": {}
   },
   "projects": {
-    "H:\\WebApi\\backeend\\workstation-backend.csproj": {
+    "F:\\backeend\\workstation-backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "H:\\WebApi\\backeend\\workstation-backend.csproj",
+        "projectUniqueName": "F:\\backeend\\workstation-backend.csproj",
         "projectName": "workstation-backend",
-        "projectPath": "H:\\WebApi\\backeend\\workstation-backend.csproj",
-        "packagesPath": "C:\\Users\\51924\\.nuget\\packages\\",
-        "outputPath": "H:\\WebApi\\backeend\\obj\\",
+        "projectPath": "F:\\backeend\\workstation-backend.csproj",
+        "packagesPath": "C:\\Users\\Rodrigo\\.nuget\\packages\\",
+        "outputPath": "F:\\backeend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\51924\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Rodrigo\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -88,7 +88,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

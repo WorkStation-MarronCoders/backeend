@@ -34,7 +34,7 @@ public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWor
 
         command.Services.ForEach(service =>
         {
-            office.Services.Add(new OfficeService(service.Name, service.Description, service.Cost));
+            office.Services.Add(new OfficeService(service.Name, service.Description, service.Cost, service.office));
         });
 
         await _officeRepository.AddAsync(office);
