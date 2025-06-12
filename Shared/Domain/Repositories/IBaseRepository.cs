@@ -6,7 +6,7 @@ public interface IBaseRepository<TEntity>
 {
     Task AddAsync(TEntity entity);
 
-    Task<TEntity?> FindByIdAsync(int id);
+    Task<TEntity?> FindByIdAsync(Guid id);
 
     void Update(TEntity entity);
 

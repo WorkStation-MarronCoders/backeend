@@ -8,5 +8,5 @@ public interface IOfficeCommandService
 {
     Task<Office> Handle(CreateOfficeCommand command);
     Task<bool> Handle(DeleteOfficeCommand command);
-    Task<bool> Handle(UpdateOfficeCommand command, int Id);
+    Task<bool> Handle(UpdateOfficeCommand command, Guid Id);
 }

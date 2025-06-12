@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using FluentValidation;
 using workstation_backend.OfficesContext.Domain;
 using workstation_backend.OfficesContext.Domain.Models.Commands;
 using workstation_backend.OfficesContext.Domain.Models.Entities;
@@ -8,16 +9,29 @@ using workstation_backend.Shared.Domain.Repositories;
 
 namespace workstation_backend.OfficesContext.Application.CommandServices;
 
-public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWork unitOfWork) : IOfficeCommandService
+public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWork unitOfWork, IValidator<CreateOfficeCommand> validator) : IOfficeCommandService
 {
     private readonly IOfficeRepository _officeRepository =
            officeRepository ?? throw new ArgumentNullException(nameof(officeRepository));
 
     private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
+    private readonly IValidator<CreateOfficeCommand> _validator = validator
+
+        ?? throw new ArgumentNullException(nameof(validator));
+
     public async Task<Office> Handle(CreateOfficeCommand command)
     {
+
         ArgumentNullException.ThrowIfNull(command);
+
+
+        var validationResult = await validator.ValidateAsync(command);
+        if (!validationResult.IsValid)
+        {
+            var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+            throw new ValidationException(string.Join(", ", errors));
+        }
 
         var existingOffice =
             await _officeRepository.GetByLocationAsync(command.Location);
@@ -58,7 +72,7 @@ public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWor
 
             return true;
         }
-    public async Task<bool> Handle(UpdateOfficeCommand command, int Id)
+    public async Task<bool> Handle(UpdateOfficeCommand command, Guid Id)
     {
         var office = await _officeRepository.FindByIdAsync(Id);
             if (office is null) throw new DataException("Office not found.");
