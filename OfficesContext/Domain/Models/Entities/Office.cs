@@ -19,4 +19,7 @@ public class Office : BaseEntity
     public int CostPerDay { get; set; }
     public bool Available { get; set; }
     public List<OfficeService> Services { get; } = new();
+    
+    public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
+
 }

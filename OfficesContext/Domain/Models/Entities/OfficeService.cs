@@ -13,9 +13,10 @@ public class OfficeService : BaseEntity
         Cost = cost;
         Office = office ?? throw new ArgumentNullException(nameof(office));
     }
-    public string Name;
-    public string Description;
-    public int Cost;
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public int Cost { get; set; }
     public Office Office;
+    public Guid OfficeId { get; set; }
     
 }
