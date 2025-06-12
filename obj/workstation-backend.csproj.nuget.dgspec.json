@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "F:\\backeend\\workstation-backend.csproj": {}
+    "C:\\Users\\Luis Díaz\\RiderProjects\\backeend\\workstation-backend.csproj": {}
   },
   "projects": {
-    "F:\\backeend\\workstation-backend.csproj": {
+    "C:\\Users\\Luis Díaz\\RiderProjects\\backeend\\workstation-backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\backeend\\workstation-backend.csproj",
+        "projectUniqueName": "C:\\Users\\Luis Díaz\\RiderProjects\\backeend\\workstation-backend.csproj",
         "projectName": "workstation-backend",
-        "projectPath": "F:\\backeend\\workstation-backend.csproj",
-        "packagesPath": "C:\\Users\\Rodrigo\\.nuget\\packages\\",
-        "outputPath": "F:\\backeend\\obj\\",
+        "projectPath": "C:\\Users\\Luis Díaz\\RiderProjects\\backeend\\workstation-backend.csproj",
+        "packagesPath": "C:\\Users\\Luis Díaz\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Luis Díaz\\RiderProjects\\backeend\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Rodrigo\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Luis Díaz\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -38,7 +44,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net9.0": {
@@ -88,7 +94,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Users\\Luis Díaz\\.dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

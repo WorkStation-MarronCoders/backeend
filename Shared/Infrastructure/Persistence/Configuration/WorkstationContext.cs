@@ -9,6 +9,7 @@ public class WorkstationContext(DbContextOptions options) : DbContext(options)
     //public DbSet<Entidad> Entidad {get; set;}
     public DbSet<Office> Offices { get; set; }
     public DbSet<OfficeService> Services { set; get; }
+    public DbSet<Rating> Ratings { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
     {
@@ -36,7 +37,11 @@ public class WorkstationContext(DbContextOptions options) : DbContext(options)
 
             entity.HasMany(o => o.Services)
                 .WithOne(s => s.Office)
-                .HasForeignKey(s => s.Id)
+                .HasForeignKey(s => s.OfficeId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(o => o.Ratings) 
+                .WithOne(r => r.Office)
+                .HasForeignKey(r => r.OfficeId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
         // OfficeService Entity Configuration
@@ -50,6 +55,15 @@ public class WorkstationContext(DbContextOptions options) : DbContext(options)
 
             entity.Property(c => c.Description).IsRequired().HasMaxLength(500);
             entity.Property(c => c.Cost).IsRequired();
+        });
+        
+        builder.Entity<Rating>(entity =>
+        {
+            entity.ToTable("Ratings");
+            entity.HasKey(r => r.Id);
+            entity.Property(r => r.Score).IsRequired();
+            entity.Property(r => r.Comment).HasMaxLength(500);
+            
         });
 
         }
