@@ -29,9 +29,10 @@ public class OfficeController(IOfficeQueryService officeQueryService, IOfficeCom
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(int id)
+    public async Task<IActionResult> Get(Guid id)
     {
-        if (id <= 0) return BadRequest("Invalid book ID.");
+       if (id == Guid.Empty)
+        return BadRequest("Invalid book ID.");
 
         try
         {
@@ -89,7 +90,7 @@ public class OfficeController(IOfficeQueryService officeQueryService, IOfficeCom
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Put(int id, [FromBody] UpdateOfficeCommand UpdateOfficeCommand)
+    public async Task<IActionResult> Put(Guid id, [FromBody] UpdateOfficeCommand UpdateOfficeCommand)
     {
         try
         {
@@ -102,9 +103,10 @@ public class OfficeController(IOfficeQueryService officeQueryService, IOfficeCom
         }
     }
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            if (id <= 0) return BadRequest("Invalid Office ID.");
+            if (id == Guid.Empty)
+                return BadRequest("Invalid book ID.");
 
             try
             {
