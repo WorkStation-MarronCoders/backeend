@@ -22,7 +22,7 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     }
 
     /// <inheritdoc />
-    public async Task<TEntity?> FindByIdAsync(int id)
+    public async Task<TEntity?> FindByIdAsync(Guid id)
     {
         return await Context.Set<TEntity>().FindAsync(id);
     }
@@ -44,4 +44,5 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     {
         return await Context.Set<TEntity>().ToListAsync();
     }
+
 }

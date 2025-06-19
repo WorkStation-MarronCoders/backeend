@@ -5,7 +5,7 @@ namespace workstation_backend.Shared.Domain.Model;
 public class BaseEntity
 {
     public Guid Id { get; set; }
-    public DateTime CreatedDate { get; set; }
+    public DateTime CreatedDate { get; set; }   
     public DateTime? ModifiedDate { get; set; }
 
     public int UserId { get; set; }
