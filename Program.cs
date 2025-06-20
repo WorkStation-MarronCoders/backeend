@@ -12,6 +12,15 @@ using workstation_backend.OfficesContext.Application.CommandServices;
 using workstation_backend.OfficesContext.Domain.Models.Validator;
 
 
+using workstation_backend.UserContext.Domain;
+using workstation_backend.UserContext.Infrastructure;
+using workstation_backend.UserContext.Domain.Services;
+using workstation_backend.UserContext.Application.QueryServices;
+using workstation_backend.UserContext.Application.CommandServices;
+using workstation_backend.UserContext.Domain.Models.Validators;
+
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -56,7 +65,10 @@ builder.Services.AddScoped<IRatingRepository, RatingRepository>();
 builder.Services.AddScoped<RatingCommandService>();
 builder.Services.AddValidatorsFromAssemblyContaining<OfficeValidator>();
 builder.Services.AddValidatorsFromAssemblyContaining<OfficeServiceValidator>();
-
+builder.Services.AddScoped<IUserCommandService, UserCommandService>();
+builder.Services.AddScoped<IUserQueryService, UserQueryService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
 
 // News Bounded Context Injection Configuration
 builder.WebHost.UseUrls("http://localhost:5000");
