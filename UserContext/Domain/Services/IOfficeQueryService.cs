@@ -8,7 +8,5 @@ public interface IUserQueryService
 {
     Task<IEnumerable<User>> Handle(GetAllUsersQuery query);
     Task<User> Handle(GetUserByIdQuery query);
-    Task<IEnumerable<SeekerProfile>> Handle(GetAllSeekersQuery query);
-    Task<IEnumerable<LessorProfile>> Handle(GetAllLessorsQuery query);
     
 }

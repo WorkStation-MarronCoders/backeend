@@ -6,5 +6,7 @@ namespace workstation_backend.UserContext.Domain;
 
 public interface IUserRepository : IBaseRepository<User>
 {
+    Task<IEnumerable<User>> GetAllAsync();
+
     Task<User?> GetByDniAsync(string dni);
 }

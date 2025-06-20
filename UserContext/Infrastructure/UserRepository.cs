@@ -15,4 +15,9 @@ public class UserRepository(WorkstationContext context) : BaseRepository<User>(c
         return await Context.Set<User>().FirstOrDefaultAsync(user => user.Dni == dni);
     }
     
+    public async Task<IEnumerable<User>> GetAllAsync()
+    {
+        return await Context.Set<User>().ToListAsync();
+    }
+    
 }

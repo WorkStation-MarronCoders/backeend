@@ -54,31 +54,19 @@ public class UserCommandService(
         _userRepository.Remove(user);
         await _unitOfWork.CompleteAsync();
     }
-
-    public async Task<bool> Handle(UpdateSeekerCommand command, Guid userId)
+    
+    public async Task<bool> Handle(UpdateUserCommand command, Guid userId)
     {
-        var user = await _userRepository.FindByIdAsync(userId);
-            if (user is null) throw new DataException("User does not exist.");
-            
-            user.FirstName = command.FirstName;
-            user.LastName = command.LastName;
-            user.PhoneNumber = command.PhoneNumber;
-            user.Email = command.Email;
-            user.PhoneNumber = command.PhoneNumber;
-            user.Role = command.Role;
-            
-            _userRepository.Update(user);
-            await _unitOfWork.CompleteAsync();
-            
-            return true;
-    }
-
-    public async Task<bool> Handle(UpdateLessorCommand command,Guid userId)
-    {
-        var user = await _userRepository.FindByIdAsync(userId);
-        if (user is null) throw new DataException("User does not exist.");
+        var user = await _userRepository.FindByIdAsync(userId)
+                   ?? throw new DataException("User does not exist.");
         
-        user.FirstName = command.FirstName;
-        user.
+        user.Update(command.FirstName, command.LastName, command.PhoneNumber, command.Email);
+
+
+        _userRepository.Update(user);
+        await _unitOfWork.CompleteAsync();
+
+        return true;
     }
+    
 }

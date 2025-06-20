@@ -24,7 +24,13 @@ public class User : BaseEntity
 
     public UserRole Role { get; private set; }
     public DateTime CreatedAt { get; private set; }
+    
+    public void Update(string firstName, string lastName, string phoneNumber, string email)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        PhoneNumber = phoneNumber;
+        Email = email;
+    }
 
-    public SeekerProfile? SeekerProfile { get; private set; }
-    public LessorProfile? LessorProfile { get; private set; }
 }

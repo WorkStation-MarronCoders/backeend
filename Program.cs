@@ -8,7 +8,11 @@ using workstation_backend.Shared.Domain.Repositories;
 using workstation_backend.OfficesContext.Domain.Services;
 using workstation_backend.OfficesContext.Application.QueryServices;
 using workstation_backend.OfficesContext.Application.CommandServices;
-
+using workstation_backend.UserContext.Domain;
+using workstation_backend.UserContext.Infrastructure;
+using workstation_backend.UserContext.Domain.Services;
+using workstation_backend.UserContext.Application.CommandServices;
+using workstation_backend.UserContext.Application.QueryServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +54,13 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IOfficeRepository, OfficeRepository>();
 builder.Services.AddScoped<IOfficeQueryService, OfficeQueryService>();
 builder.Services.AddScoped<IOfficeCommandService, OfficeCommandService>();
+
+// Para el contexto de oficinas
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserQueryService, UserQueryService>();
+builder.Services.AddScoped<IUserCommandService, UserCommandService>();
+
+
 
 // News Bounded Context Injection Configuration
 builder.WebHost.UseUrls("http://localhost:5000");
