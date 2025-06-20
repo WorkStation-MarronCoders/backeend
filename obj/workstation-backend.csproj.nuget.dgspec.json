@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "H:\\WebApi\\backeend\\workstation-backend.csproj": {}
+    "h:\\WebApi\\backeend\\workstation-backend.csproj": {}
   },
   "projects": {
-    "H:\\WebApi\\backeend\\workstation-backend.csproj": {
+    "h:\\WebApi\\backeend\\workstation-backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "H:\\WebApi\\backeend\\workstation-backend.csproj",
+        "projectUniqueName": "h:\\WebApi\\backeend\\workstation-backend.csproj",
         "projectName": "workstation-backend",
-        "projectPath": "H:\\WebApi\\backeend\\workstation-backend.csproj",
+        "projectPath": "h:\\WebApi\\backeend\\workstation-backend.csproj",
         "packagesPath": "C:\\Users\\51924\\.nuget\\packages\\",
-        "outputPath": "H:\\WebApi\\backeend\\obj\\",
+        "outputPath": "h:\\WebApi\\backeend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\51924\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -47,6 +47,10 @@
             "FluentValidation": {
               "target": "Package",
               "version": "[12.0.0, )"
+            },
+            "FluentValidation.AspNetCore": {
+              "target": "Package",
+              "version": "[11.3.1, )"
             },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",

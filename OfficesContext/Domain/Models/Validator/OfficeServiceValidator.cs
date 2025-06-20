@@ -1,10 +1,10 @@
 using System;
 using FluentValidation;
-using workstation_backend.OfficesContext.Domain.Models.Entities;
+using workstation_backend.OfficesContext.Domain.Models.Commands;
 
 namespace workstation_backend.OfficesContext.Domain.Models.Validator;
 
-public class OfficeServiceValidator :AbstractValidator<OfficeService>
+public class OfficeServiceValidator :AbstractValidator<OfficeServiceCommand>
 {
 public OfficeServiceValidator()
 
@@ -27,12 +27,6 @@ public OfficeServiceValidator()
         RuleFor(x => x.Cost)
 
             .GreaterThanOrEqualTo(0).WithMessage("Cost can't be negative.");
-
-  
-
-        RuleFor(x => x.Office)
-
-            .NotNull().WithMessage("Must be associated with an Office.");
 
     }
 

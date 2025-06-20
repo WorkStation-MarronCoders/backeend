@@ -1,10 +1,11 @@
 using System;
 using FluentValidation;
+using workstation_backend.OfficesContext.Domain.Models.Commands;
 using workstation_backend.OfficesContext.Domain.Models.Entities;
 
 namespace workstation_backend.OfficesContext.Domain.Models.Validator;
 
-public class OfficeValidator : AbstractValidator<Office>
+public class OfficeValidator : AbstractValidator<CreateOfficeCommand>
 {
     public OfficeValidator()
 

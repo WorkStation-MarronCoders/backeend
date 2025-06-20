@@ -6,14 +6,18 @@ namespace workstation_backend.OfficesContext.Domain.Models.Entities;
 public class Office : BaseEntity
 {
 
-    public Office(string location, int capacity, int costperday, bool available)
+    public Office(string location, int capacity, int costPerDay, bool available)
     {
         Location = location;
         Capacity = capacity;
-        CostPerDay = costperday;
+        CostPerDay = costPerDay;
+        IsActive = true;
         Available = available;
         Services = new List<OfficeService>();
     }
+
+    public Office() {} 
+
     public string Location { get; set; }
     public int Capacity { get; set; }
     public int CostPerDay { get; set; }

@@ -6,8 +6,6 @@ using workstation_backend.OfficesContext.Domain.Models.Entities;
 using workstation_backend.Shared.Infrastructure.Persistence.Configuration;
 using workstation_backend.Shared.Infrastructure.Persistence.Repositories;
 
-using OfficesContext.Domain;
-using Shared.Infrastructure.Persistence.Configuration;
 
 
 public class RatingRepository : IRatingRepository
@@ -47,4 +45,9 @@ public class RatingRepository : IRatingRepository
 
     public Task<IEnumerable<Rating>> GetAllAsync() =>
         Task.FromResult<IEnumerable<Rating>>(_context.Ratings.ToList());
+
+    public Task<Rating?> FindByIdAsync(Guid id)
+    {
+        throw new NotImplementedException();
+    }
 }

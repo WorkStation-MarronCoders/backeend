@@ -47,8 +47,8 @@ public class OfficeController(IOfficeQueryService officeQueryService, IOfficeCom
         }
     }
 
-    [HttpGet("{location:string}")]
-    public async Task<IActionResult> Get(string location)
+    [HttpGet("by-location/{location}")]
+    public async Task<IActionResult> GetByLocation(string location)
     {
         if (string.IsNullOrWhiteSpace(location)) return BadRequest("Invalid location");
 

@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "XPF9Hp6DOUM=",
+  "dgSpecHash": "/OT0FX/Ukps=",
   "success": true,
-  "projectFilePath": "H:\\WebApi\\backeend\\workstation-backend.csproj",
+  "projectFilePath": "h:\\WebApi\\backeend\\workstation-backend.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\51924\\.nuget\\packages\\bouncycastle.cryptography\\2.5.1\\bouncycastle.cryptography.2.5.1.nupkg.sha512",
     "C:\\Users\\51924\\.nuget\\packages\\fluentvalidation\\12.0.0\\fluentvalidation.12.0.0.nupkg.sha512",
+    "C:\\Users\\51924\\.nuget\\packages\\fluentvalidation.aspnetcore\\11.3.1\\fluentvalidation.aspnetcore.11.3.1.nupkg.sha512",
+    "C:\\Users\\51924\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.11.0\\fluentvalidation.dependencyinjectionextensions.11.11.0.nupkg.sha512",
     "C:\\Users\\51924\\.nuget\\packages\\google.protobuf\\3.30.0\\google.protobuf.3.30.0.nupkg.sha512",
     "C:\\Users\\51924\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
     "C:\\Users\\51924\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

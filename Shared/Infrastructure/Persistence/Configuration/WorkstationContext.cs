@@ -26,33 +26,33 @@ public class WorkstationContext(DbContextOptions options) : DbContext(options)
             entity.ToTable("Offices");
             entity.HasKey(c => c.Id);
 
+
             entity.Property(c => c.Location).IsRequired().HasMaxLength(200);
             entity.HasIndex(c => c.Location).IsUnique();
 
-            entity.Property(c => c.Capacity).IsRequired().HasMaxLength(1000);
-
+            entity.Property(c => c.Capacity).IsRequired(); 
             entity.Property(c => c.CostPerDay).IsRequired();
-
             entity.Property(c => c.Available).IsRequired();
 
             entity.HasMany(o => o.Services)
                 .WithOne(s => s.Office)
                 .HasForeignKey(s => s.OfficeId)
-                .OnDelete(DeleteBehavior.Cascade);
-            entity.HasMany(o => o.Ratings) 
+                .OnDelete(DeleteBehavior.Cascade); 
+
+
+            entity.HasMany(o => o.Ratings)
                 .WithOne(r => r.Office)
                 .HasForeignKey(r => r.OfficeId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade); 
         });
         // OfficeService Entity Configuration
-        builder.Entity<OfficeService>(entity =>
-        {
+        builder.Entity<OfficeService>(entity =>{
             entity.ToTable("OfficeServices");
             entity.HasKey(c => c.Id);
 
-            entity.Property(c => c.Name).IsRequired().HasMaxLength(200);
-            entity.HasIndex(c => c.Name).IsUnique();
+            entity.HasIndex(s => new { s.OfficeId, s.Name }).IsUnique();
 
+            entity.Property(c => c.Name).IsRequired().HasMaxLength(200);
             entity.Property(c => c.Description).IsRequired().HasMaxLength(500);
             entity.Property(c => c.Cost).IsRequired();
         });

@@ -1,13 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using workstation_backend.Shared.Infrastructure.Persistence.Configuration;
 using workstation_backend.Shared.Infrastructure.Persistence.Repositories;
-using workstation_backend.Shared.Domain;
+using FluentValidation;
+
 using workstation_backend.OfficesContext.Domain;
 using workstation_backend.OfficesContext.Infrastructure;
 using workstation_backend.Shared.Domain.Repositories;
 using workstation_backend.OfficesContext.Domain.Services;
 using workstation_backend.OfficesContext.Application.QueryServices;
 using workstation_backend.OfficesContext.Application.CommandServices;
+using workstation_backend.OfficesContext.Domain.Models.Validator;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,6 +52,11 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IOfficeRepository, OfficeRepository>();
 builder.Services.AddScoped<IOfficeQueryService, OfficeQueryService>();
 builder.Services.AddScoped<IOfficeCommandService, OfficeCommandService>();
+builder.Services.AddScoped<IRatingRepository, RatingRepository>();
+builder.Services.AddScoped<RatingCommandService>();
+builder.Services.AddValidatorsFromAssemblyContaining<OfficeValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<OfficeServiceValidator>();
+
 
 // News Bounded Context Injection Configuration
 builder.WebHost.UseUrls("http://localhost:5000");
