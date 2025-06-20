@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "H:\\WebApi\\backeend\\workstation-backend.csproj": {}
+    "C:\\Jeremy\\UPC\\Ingeneria\\CICLO 5\\App Webs\\backeend\\workstation-backend.csproj": {}
   },
   "projects": {
-    "H:\\WebApi\\backeend\\workstation-backend.csproj": {
+    "C:\\Jeremy\\UPC\\Ingeneria\\CICLO 5\\App Webs\\backeend\\workstation-backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "H:\\WebApi\\backeend\\workstation-backend.csproj",
+        "projectUniqueName": "C:\\Jeremy\\UPC\\Ingeneria\\CICLO 5\\App Webs\\backeend\\workstation-backend.csproj",
         "projectName": "workstation-backend",
-        "projectPath": "H:\\WebApi\\backeend\\workstation-backend.csproj",
-        "packagesPath": "C:\\Users\\51924\\.nuget\\packages\\",
-        "outputPath": "H:\\WebApi\\backeend\\obj\\",
+        "projectPath": "C:\\Jeremy\\UPC\\Ingeneria\\CICLO 5\\App Webs\\backeend\\workstation-backend.csproj",
+        "packagesPath": "C:\\Users\\Ususario\\.nuget\\packages\\",
+        "outputPath": "C:\\Jeremy\\UPC\\Ingeneria\\CICLO 5\\App Webs\\backeend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\51924\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Ususario\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -38,7 +38,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
         "net9.0": {
@@ -92,7 +92,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Users\\Ususario\\.dotnet\\sdk\\9.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -47,4 +47,10 @@ public class RatingRepository : IRatingRepository
 
     public Task<IEnumerable<Rating>> GetAllAsync() =>
         Task.FromResult<IEnumerable<Rating>>(_context.Ratings.ToList());
+    
+    public async Task<Rating> FindByIdAsync(Guid id)
+    {
+        return await _context.Set<Rating>().FindAsync(id);
+    }
+    
 }
