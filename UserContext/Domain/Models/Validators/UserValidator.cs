@@ -1,9 +1,10 @@
 ﻿using FluentValidation;
 using workstation_backend.UserContext.Domain.Models.Entities;
+using workstation_backend.UserContext.Domain.Models.Commands;
 
 namespace workstation_backend.UserContext.Domain.Models.Validators;
 
-public class UserValidator : AbstractValidator<User>
+public class UserValidator : AbstractValidator<CreateUserCommand>
 {
     public UserValidator()
     {

@@ -70,6 +70,8 @@ builder.Services.AddScoped<IUserQueryService, UserQueryService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
 
+
+
 // News Bounded Context Injection Configuration
 builder.WebHost.UseUrls("http://localhost:5000");
 
