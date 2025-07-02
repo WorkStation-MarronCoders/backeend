@@ -24,6 +24,20 @@ public class UserRepository(WorkstationContext context)
     {
         return await Context.Set<User>().FirstOrDefaultAsync(user => user.Dni == dni);
     }
+    /// <summary>
+    /// Obtiene un usuario por su dirección de correo electrónico.
+    /// </summary>
+    /// <param name="email">Correo electrónico del usuario.</param>
+    /// <returns>El usuario si se encuentra; null si no existe.</returns>
+    public async Task<User?> GetByEmailAsync(string email)
+    {
+        return await Context.Set<User>().FirstOrDefaultAsync(user => user.Email == email);
+    }
+
+    public async Task<User?> GetByPhoneNumberAsync(string phoneNumber)
+    {
+        return await Context.Set<User>().FirstOrDefaultAsync(user => user.PhoneNumber == phoneNumber);
+    }
 
     /// <summary>
     /// Retorna todos los usuarios registrados en el sistema.

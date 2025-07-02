@@ -24,13 +24,22 @@ public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWor
         ?? throw new ArgumentNullException(nameof(validator));
 
     /// <summary>
-    /// Maneja la creación de una nueva oficina, incluyendo validación y verificación de duplicados.
+    /// Maneja la creación de una nueva oficina, incluyendo validaciones de negocio y verificación de duplicados.
     /// </summary>
     /// <param name="command">Comando con los datos de la oficina a crear.</param>
     /// <returns>La oficina creada.</returns>
-    /// <exception cref="ArgumentNullException">Si el comando o la lista de servicios es nula.</exception>
-    /// <exception cref="ValidationException">Si la validación del comando falla.</exception>
-    /// <exception cref="DuplicateNameException">Si ya existe una oficina con la misma ubicación.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Si el comando es nulo o la lista de servicios está vacía.
+    /// </exception>
+    /// <exception cref="ValidationException">
+    /// Si la validación del comando falla mediante FluentValidation.
+    /// </exception>
+    /// <exception cref="DuplicateNameException">
+    /// Si ya existe una oficina con la misma ubicación.
+    /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Si el costo diario supera los límites permitidos según la cantidad de servicios.
+    /// </exception>
     public async Task<Office> Handle(CreateOfficeCommand command)
     {
         ArgumentNullException.ThrowIfNull(command);
@@ -47,8 +56,21 @@ public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWor
             throw new DuplicateNameException($"An office with this location '{command.Location}' already exists.");
 
         if (command.Services == null || !command.Services.Any())
-            throw new ArgumentNullException();
+        throw new ArgumentNullException(nameof(command.Services), "The office must have at least one service.");
 
+        const int MaxCostPerDay1 = 54;
+        const int MaxCostPerDay2 = 80;
+        int serviceCount = command.Services.Count;
+
+        if (serviceCount <= 2 && command.CostPerDay > MaxCostPerDay1)
+        {
+            throw new InvalidOperationException($"The daily cost cannot exceed {MaxCostPerDay1} when there are {serviceCount} or fewer services.");
+        }
+
+        if (serviceCount > 4 && command.CostPerDay > MaxCostPerDay2)
+        {
+            throw new InvalidOperationException($"The daily cost cannot exceed {MaxCostPerDay2} when there are more than 4 services.");
+        }
 
         var office = new Office(command.Location, command.Capacity, command.CostPerDay, command.Available)
         {
@@ -71,12 +93,19 @@ public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWor
     /// </summary>
     /// <param name="command">Comando con el ID de la oficina a eliminar.</param>
     /// <returns>True si la operación fue exitosa; false si no se encontró la oficina.</returns>
+    /// <exception cref="ArgumentNullException">Si el comando es nulo.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Si la oficina no está disponible (Available == false) y se intenta eliminar.
+    /// </exception>
     public async Task<bool> Handle(DeleteOfficeCommand command)
     {
         ArgumentNullException.ThrowIfNull(command);
 
         var office = await _officeRepository.FindByIdAsync(command.Id);
         if (office is null) return false;
+
+        if (!office.Available)
+            throw new InvalidOperationException("Cannot delete an office that is currently in use or not available.");
 
         office.IsActive = false;
         office.ModifiedDate = DateTime.UtcNow;
@@ -89,28 +118,47 @@ public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWor
     }
 
     /// <summary>
-    /// Maneja la actualización de una oficina existente.
+    /// Maneja la actualización de una oficina existente, validando restricciones de antigüedad y disponibilidad.
     /// </summary>
     /// <param name="command">Comando con los nuevos datos de la oficina.</param>
     /// <param name="Id">Identificador de la oficina que se desea actualizar.</param>
-    /// <returns>True si la operación fue exitosa; lanza excepción si no se encuentra la oficina.</returns>
+    /// <returns>True si la operación fue exitosa.</returns>
+    /// <exception cref="ArgumentNullException">Si el comando es nulo.</exception>
     /// <exception cref="DataException">Si no se encuentra la oficina especificada.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Si no han pasado al menos 2 días desde la creación de la oficina,
+    /// si la oficina no está disponible,
+    /// o si se intenta modificar la ubicación antes de 6 meses desde el último cambio.
+    /// </exception>
     public async Task<bool> Handle(UpdateOfficeCommand command, Guid Id)
-    {
-        var office = await _officeRepository.FindByIdAsync(Id);
-        if (office is null) throw new DataException("Office not found.");
+{
+    var office = await _officeRepository.FindByIdAsync(Id);
+    if (office is null) throw new DataException("Office not found.");
 
+    var daysSinceCreated = (DateTime.UtcNow - office.CreatedDate).TotalDays;
+    if (daysSinceCreated <= 2)
+        throw new InvalidOperationException("The office cannot be updated until 2 days have passed since its creation.");
 
-        office.Location = command.Location;
-        office.Capacity = command.Capacity;
-        office.CostPerDay = command.CostPerDay;
-        office.Available = command.Available;
-        office.ModifiedDate = DateTime.UtcNow;
-        office.UpdatedUserId = 87; 
+    if (!office.Available)
+        throw new InvalidOperationException("The office must be available to perform updates.");
 
-        _officeRepository.Update(office);
-        await _unitOfWork.CompleteAsync();
+    bool isLocationChanged = !string.Equals(office.Location, command.Location, StringComparison.OrdinalIgnoreCase);
+    var lastModified = office.ModifiedDate.GetValueOrDefault(office.CreatedDate);
+    var monthsSinceModified = (DateTime.UtcNow - lastModified).TotalDays / 30.0;
 
-        return true;
-    }
+    if (isLocationChanged && monthsSinceModified < 6)
+        throw new InvalidOperationException("The office location can only be changed once every 6 months.");
+
+    office.Location = command.Location;
+    office.Capacity = command.Capacity;
+    office.CostPerDay = command.CostPerDay;
+    office.Available = command.Available;
+    office.ModifiedDate = DateTime.UtcNow;
+    office.UpdatedUserId = 87;
+
+    _officeRepository.Update(office);
+    await _unitOfWork.CompleteAsync();
+
+    return true;  
+}
 }

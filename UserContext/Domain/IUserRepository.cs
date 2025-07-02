@@ -16,6 +16,15 @@ public interface IUserRepository : IBaseRepository<User>
     Task<IEnumerable<User>> GetAllAsync();
 
     /// <summary>
+    /// Obtiene un usuario por su email.
+    /// </summary>
+    /// <param name="email">email que se uso para registrarse</param>
+    /// <returns>El usuario correspondiente o null si no se encuentra.</returns>
+    Task<User?> GetByEmailAsync(string email);
+
+    Task<User?> GetByPhoneNumberAsync(string phoneNumber);
+
+    /// <summary>
     /// Obtiene un usuario por su número de DNI.
     /// </summary>
     /// <param name="dni">Número de documento nacional de identidad.</param>

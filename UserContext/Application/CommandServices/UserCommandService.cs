@@ -29,40 +29,57 @@ public class UserCommandService(
     private readonly IValidator<CreateUserCommand> _validator = validator;
 
     /// <summary>
-    /// Maneja la creación de un nuevo usuario, incluyendo validación y verificación de duplicados.
+    /// Crea un nuevo usuario validando datos únicos y rol permitido.
     /// </summary>
-    /// <param name="command">Comando con los datos del usuario a crear.</param>
+    /// <param name="command">Comando con los datos del usuario.</param>
     /// <returns>El usuario creado.</returns>
-    /// <exception cref="ValidationException">Si los datos no cumplen las reglas.</exception>
-    /// <exception cref="DuplicateNameException">Si ya existe un usuario con el mismo DNI.</exception>
+    /// <exception cref="ArgumentNullException">Si el comando es nulo.</exception>
+    /// <exception cref="ValidationException">Si el comando no cumple las reglas de FluentValidation.</exception>
+    /// <exception cref="DuplicateNameException">
+    /// Si ya existe un usuario con el mismo DNI, email o número telefónico.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Si el rol del usuario no está entre los valores válidos.</exception>
+
     public async Task<User> Handle(CreateUserCommand command)
+{
+    ArgumentNullException.ThrowIfNull(command);
+
+    var validationResult = await validator.ValidateAsync(command);
+    if (!validationResult.IsValid)
     {
-        ArgumentNullException.ThrowIfNull(command);
-
-        var validationResult = await validator.ValidateAsync(command);
-        if (!validationResult.IsValid)
-        {
-            var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-            throw new ValidationException(string.Join(", ", errors));
-        }
-        
-        var existingUser = await _userRepository.GetByDniAsync(command.Dni);
-        if (existingUser is not null)
-            throw new DuplicateNameException($"A user with DNI '{command.Dni}' already exists.");
-
-        var user = new User(
-            command.FirstName, 
-            command.LastName, 
-            command.Dni, 
-            command.PhoneNumber, 
-            command.Email,
-            command.Role);
-           
-        await _userRepository.AddAsync(user);
-        await _unitOfWork.CompleteAsync();    
-
-        return user;
+        var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+        throw new ValidationException(string.Join(", ", errors));
     }
+
+    var existingUser = await _userRepository.GetByDniAsync(command.Dni);
+    if (existingUser is not null)
+        throw new DuplicateNameException($"A user with DNI '{command.Dni}' already exists.");
+
+    var userWithSameEmail = await _userRepository.GetByEmailAsync(command.Email);
+    if (userWithSameEmail is not null)
+        throw new DuplicateNameException($"A user with email '{command.Email}' already exists.");
+
+    var userWithSamePhoneNumber = await _userRepository.GetByPhoneNumberAsync(command.PhoneNumber);
+    if (userWithSamePhoneNumber is not null)
+        throw new DuplicateNameException($"A user with phone number '{command.PhoneNumber}' already exists.");
+
+    if (!Enum.IsDefined(typeof(UserRole), command.Role))
+        throw new ArgumentOutOfRangeException(nameof(command.Role), "Invalid user role value.");
+
+    var user = new User(
+        command.FirstName,
+        command.LastName,
+        command.Dni,
+        command.PhoneNumber,
+        command.Email,
+        command.Role);
+
+    await _userRepository.AddAsync(user);
+    await _unitOfWork.CompleteAsync();
+
+    return user;
+}
+
 
     /// <summary>
     /// Maneja la eliminación de un usuario del sistema.
@@ -85,11 +102,36 @@ public class UserCommandService(
     /// <param name="userId">ID del usuario a modificar.</param>
     /// <returns>True si se actualizó correctamente.</returns>
     /// <exception cref="DataException">Si no se encuentra el usuario.</exception>
+    /// /// <exception cref="InvalidOperationException">
+    /// Si se intenta cambiar el nombre o apellido antes de 1 semana de creación.
+    /// </exception>
+    /// <exception cref="DuplicateNameException">
+    /// Si el nuevo teléfono o correo ya están registrados en otro usuario.
+    /// </exception>
+
     public async Task<bool> Handle(UpdateUserCommand command, Guid userId)
     {
         var user = await _userRepository.FindByIdAsync(userId)
-                   ?? throw new DataException("User does not exist.");
-        
+                ?? throw new DataException("User does not exist.");
+
+        var daysSinceCreated = (DateTime.UtcNow - user.CreatedAt).TotalDays;
+        bool isFirstNameChanged = !string.Equals(user.FirstName, command.FirstName, StringComparison.OrdinalIgnoreCase);
+        bool isLastNameChanged = !string.Equals(user.LastName, command.LastName, StringComparison.OrdinalIgnoreCase);
+
+        if ((isFirstNameChanged || isLastNameChanged) && daysSinceCreated < 7)
+            throw new InvalidOperationException("First name and last name can only be updated after 1 week from user creation.");
+
+        var allUsers = await _userRepository.GetAllAsync();
+
+        bool isPhoneChanged = !string.Equals(user.PhoneNumber, command.PhoneNumber, StringComparison.OrdinalIgnoreCase);
+        bool isEmailChanged = !string.Equals(user.Email, command.Email, StringComparison.OrdinalIgnoreCase);
+
+        if (isPhoneChanged && allUsers.Any(u => u.Id != userId && u.PhoneNumber == command.PhoneNumber))
+            throw new DuplicateNameException($"The phone number '{command.PhoneNumber}' is already in use.");
+
+        if (isEmailChanged && allUsers.Any(u => u.Id != userId && u.Email == command.Email))
+            throw new DuplicateNameException($"The email '{command.Email}' is already in use.");
+
         user.Update(command.FirstName, command.LastName, command.PhoneNumber, command.Email);
 
         _userRepository.Update(user);
@@ -97,4 +139,5 @@ public class UserCommandService(
 
         return true;
     }
+
 }
