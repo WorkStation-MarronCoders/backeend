@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using workstation_backend.UserContext.Domain.Models.Commands;
@@ -11,29 +10,65 @@ using workstation_backend.UserContext.Interfaces.REST.Transform;
 
 namespace workstation_backend.UserContext.Interfaces.REST;
 
+/// <summary>
+/// Controlador para la gestión de usuarios del sistema
+/// </summary>
 [Route("api/workstation/[controller]")]
 [ApiController]
+[Produces("application/json")]
 public class UserController(IUserQueryService userQueryService, IUserCommandService userCommandService): ControllerBase
 {
     private readonly IUserQueryService _userQueryService = userQueryService ?? throw new ArgumentNullException(nameof(userQueryService));
     private readonly IUserCommandService _userCommandService = userCommandService ?? throw new ArgumentNullException(nameof(userCommandService));
 
+    /// <summary>
+    /// Obtiene todos los usuarios del sistema
+    /// </summary>
+    /// <returns>Lista de usuarios registrados</returns>
+    /// <response code="200">Retorna la lista de usuarios</response>
+    /// <response code="404">No se encontraron usuarios</response>
+    /// <response code="500">Error interno del servidor</response>
+    [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<User>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<IEnumerable<User>>> GetUsers()
     {
-        var query = new GetAllUsersQuery();
-        var result = await _userQueryService.Handle(query);
-        
-        if(!result.Any()) return NotFound("No users found.");
-        
-        var resourcers = result.Select(UserResourceFromEntityAssembler.ToResourceFromEntity).ToList();
-        return Ok(resourcers);
+        try
+        {
+            var query = new GetAllUsersQuery();
+            var result = await _userQueryService.Handle(query);
+            
+            if(!result.Any()) return NotFound("No users found.");
+            
+            var resourcers = result.Select(UserResourceFromEntityAssembler.ToResourceFromEntity).ToList();
+            return Ok(resourcers);
+        }
+        catch (Exception ex)
+        {
+            return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+        }
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> Get(Guid id)
+    /// <summary>
+    /// Obtiene un usuario por su ID único
+    /// </summary>
+    /// <param name="id">ID único del usuario (GUID)</param>
+    /// <returns>Datos del usuario solicitado</returns>
+    /// <response code="200">Retorna el usuario encontrado</response>
+    /// <response code="400">ID de usuario inválido</response>
+    /// <response code="404">Usuario no encontrado</response>
+    /// <response code="500">Error interno del servidor</response>
+    [HttpGet("{id:guid}")]
+    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetUserById([FromRoute] Guid id)
     {
         if (id == Guid.Empty)
-            return BadRequest("Invalid book ID.");
+            return BadRequest("Invalid user ID.");
+        
         try
         {
             var query = new GetUserByIdQuery(id);
@@ -41,7 +76,7 @@ public class UserController(IUserQueryService userQueryService, IUserCommandServ
 
             return result != null
                 ? Ok(UserResourceFromEntityAssembler.ToResourceFromEntity(result))
-                : NotFound($"Office with ID {id} not found.");
+                : NotFound($"User with ID {id} not found.");
         }
         catch (Exception ex)
         {
@@ -49,15 +84,32 @@ public class UserController(IUserQueryService userQueryService, IUserCommandServ
         }
     }
 
-    // POST:
-    public async Task<IActionResult> Post(CreateUserCommand command)
+    /// <summary>
+    /// Crea un nuevo usuario en el sistema
+    /// </summary>
+    /// <param name="command">Datos del usuario a crear</param>
+    /// <returns>Confirmación de creación del usuario</returns>
+    /// <response code="201">Usuario creado exitosamente</response>
+    /// <response code="400">Datos de entrada inválidos o usuario no encontrado</response>
+    /// <response code="409">Ya existe un usuario con el mismo DNI</response>
+    /// <response code="500">Error interno del servidor</response>
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
     {
-        if (command == null) return BadRequest("Invalid user data.");
+        if (command == null) 
+            return BadRequest("Invalid user data.");
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
         try
         {
             await _userCommandService.Handle(command);
-            return StatusCode(StatusCodes.Status201Created);
+            return StatusCode(StatusCodes.Status201Created, "User created successfully.");
         }
         catch (UserNotFoundException exception)
         {
@@ -65,7 +117,7 @@ public class UserController(IUserQueryService userQueryService, IUserCommandServ
         }
         catch (DuplicateNameException)
         {
-            return Conflict("An user with the same dni already exists.");
+            return Conflict("A user with the same DNI already exists.");
         }
         catch (Exception ex)
         {
@@ -73,13 +125,40 @@ public class UserController(IUserQueryService userQueryService, IUserCommandServ
         }
     }
 
-    [HttpPut("{id:int}")]
-    public async Task<IActionResult> Put(Guid id, [FromBody] UpdateUserCommand UpdateUserCommand)
+    /// <summary>
+    /// Actualiza los datos de un usuario existente
+    /// </summary>
+    /// <param name="id">ID único del usuario a actualizar</param>
+    /// <param name="updateUserCommand">Nuevos datos del usuario</param>
+    /// <returns>Confirmación de actualización</returns>
+    /// <response code="200">Usuario actualizado exitosamente</response>
+    /// <response code="400">ID inválido o datos de entrada incorrectos</response>
+    /// <response code="404">Usuario no encontrado</response>
+    /// <response code="500">Error interno del servidor</response>
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdateUser([FromRoute] Guid id, [FromBody] UpdateUserCommand updateUserCommand)
     {
+        if (id == Guid.Empty)
+            return BadRequest("Invalid user ID.");
+
+        if (updateUserCommand == null)
+            return BadRequest("Invalid user data.");
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         try
         {
-            await _userCommandService.Handle(UpdateUserCommand, id);
-            return Ok();
+            await _userCommandService.Handle(updateUserCommand, id);
+            return Ok("User updated successfully.");
+        }
+        catch (UserNotFoundException exception)
+        {
+            return NotFound(exception.Message);
         }
         catch (Exception ex)
         {
@@ -87,8 +166,21 @@ public class UserController(IUserQueryService userQueryService, IUserCommandServ
         }
     }
 
-    [HttpDelete("{id:int}")]
-    public async Task<IActionResult> Delete(Guid id)
+    /// <summary>
+    /// Elimina un usuario del sistema
+    /// </summary>
+    /// <param name="id">ID único del usuario a eliminar</param>
+    /// <returns>Confirmación de eliminación</returns>
+    /// <response code="204">Usuario eliminado exitosamente</response>
+    /// <response code="400">ID de usuario inválido</response>
+    /// <response code="404">Usuario no encontrado</response>
+    /// <response code="500">Error interno del servidor</response>
+    [HttpDelete("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteUser([FromRoute] Guid id)
     {
         if (id == Guid.Empty)
             return BadRequest("Invalid user ID.");
@@ -99,10 +191,13 @@ public class UserController(IUserQueryService userQueryService, IUserCommandServ
             await _userCommandService.Handle(command);
             return NoContent();
         }
+        catch (UserNotFoundException exception)
+        {
+            return NotFound(exception.Message);
+        }
         catch (Exception ex)
         {
             return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
         }
     }
-    
 }

@@ -4,9 +4,21 @@ using workstation_backend.Shared.Domain.Repositories;
 
 namespace workstation_backend.UserContext.Domain;
 
+/// <summary>
+/// Define las operaciones de persistencia específicas para entidades <see cref="User"/>.
+/// </summary>
 public interface IUserRepository : IBaseRepository<User>
 {
+    /// <summary>
+    /// Obtiene todos los usuarios registrados.
+    /// </summary>
+    /// <returns>Una colección de usuarios.</returns>
     Task<IEnumerable<User>> GetAllAsync();
 
+    /// <summary>
+    /// Obtiene un usuario por su número de DNI.
+    /// </summary>
+    /// <param name="dni">Número de documento nacional de identidad.</param>
+    /// <returns>El usuario correspondiente o null si no se encuentra.</returns>
     Task<User?> GetByDniAsync(string dni);
 }

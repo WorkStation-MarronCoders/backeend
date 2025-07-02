@@ -11,7 +11,6 @@ using workstation_backend.OfficesContext.Application.QueryServices;
 using workstation_backend.OfficesContext.Application.CommandServices;
 using workstation_backend.OfficesContext.Domain.Models.Validator;
 
-
 using workstation_backend.UserContext.Domain;
 using workstation_backend.UserContext.Infrastructure;
 using workstation_backend.UserContext.Domain.Services;
@@ -19,15 +18,64 @@ using workstation_backend.UserContext.Application.QueryServices;
 using workstation_backend.UserContext.Application.CommandServices;
 using workstation_backend.UserContext.Domain.Models.Validators;
 
-
+// Importar Swagger
+using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Workstation API",
+        Version = "v1",
+        Description = "API para gestión de estaciones de trabajo",
+        Contact = new OpenApiContact
+        {
+            Name = "Tu Nombre",
+            Email = "tu-email@example.com"
+        }
+    });
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+    {
+        c.IncludeXmlComments(xmlPath);
+    }
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+        }
+    });
+});
 
 // Add Database Connection
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -71,14 +119,22 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
 
 
-
-// News Bounded Context Injection Configuration
 builder.WebHost.UseUrls("http://localhost:5000");
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
-// Verify Database Objects are created
+app.UseCors("AllowAll");
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -86,16 +142,18 @@ using (var scope = app.Services.CreateScope())
     context.Database.EnsureCreated();
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    // Configurar Swagger UI
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Workstation API V1");
+        c.RoutePrefix = "swagger"; 
+    });
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
-
 app.Run();
