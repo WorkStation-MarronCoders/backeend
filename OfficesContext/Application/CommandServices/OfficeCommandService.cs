@@ -130,6 +130,7 @@ public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWor
     /// si la oficina no está disponible,
     /// o si se intenta modificar la ubicación antes de 6 meses desde el último cambio.
     /// </exception>
+    /// 
     public async Task<bool> Handle(UpdateOfficeCommand command, Guid Id)
 {
     var office = await _officeRepository.FindByIdAsync(Id);

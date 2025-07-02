@@ -1,72 +1,76 @@
-using System;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using workstation_backend.OfficesContext.Domain.Models.Entities;
 using workstation_backend.UserContext.Domain.Models.Entities;
+
 namespace workstation_backend.Shared.Infrastructure.Persistence.Configuration;
 
 public class WorkstationContext(DbContextOptions options) : DbContext(options)
 {
-    //public DbSet<Entidad> Entidad {get; set;}
     public DbSet<Office> Offices { get; set; }
-    public DbSet<OfficeService> Services { set; get; }
+    public DbSet<OfficeService> Services { get; set; }
     public DbSet<Rating> Ratings { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder builder)
-    {
-        base.OnConfiguring(builder);
-    }
+    public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
 
-        // Office Entity Configuration
+        // Office
         builder.Entity<Office>(entity =>
         {
             entity.ToTable("Offices");
-            entity.HasKey(c => c.Id);
+            entity.HasKey(o => o.Id);
 
+            entity.Property(o => o.Location).IsRequired().HasMaxLength(200);
+            entity.HasIndex(o => o.Location).IsUnique();
 
-            entity.Property(c => c.Location).IsRequired().HasMaxLength(200);
-            entity.HasIndex(c => c.Location).IsUnique();
+            entity.Property(o => o.Capacity).IsRequired();
+            entity.Property(o => o.CostPerDay).IsRequired();
+            entity.Property(o => o.Available).IsRequired();
 
-            entity.Property(c => c.Capacity).IsRequired(); 
-            entity.Property(c => c.CostPerDay).IsRequired();
-            entity.Property(c => c.Available).IsRequired();
+            entity.Property(o => o.CreatedDate).HasColumnType("DATETIME");
+            entity.Property(o => o.ModifiedDate).HasColumnType("DATETIME");
 
             entity.HasMany(o => o.Services)
                 .WithOne(s => s.Office)
                 .HasForeignKey(s => s.OfficeId)
-                .OnDelete(DeleteBehavior.Cascade); 
-
+                .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasMany(o => o.Ratings)
                 .WithOne(r => r.Office)
                 .HasForeignKey(r => r.OfficeId)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
         });
-        // OfficeService Entity Configuration
-        builder.Entity<OfficeService>(entity =>{
+
+        // OfficeService
+        builder.Entity<OfficeService>(entity =>
+        {
             entity.ToTable("OfficeServices");
-            entity.HasKey(c => c.Id);
+            entity.HasKey(s => s.Id);
+
+            entity.Property(s => s.Name).IsRequired().HasMaxLength(200);
+            entity.Property(s => s.Description).IsRequired().HasMaxLength(500);
+            entity.Property(s => s.Cost).IsRequired();
+            entity.Property(s => s.CreatedDate).HasColumnType("DATETIME");
+            entity.Property(s => s.ModifiedDate).HasColumnType("DATETIME");
 
             entity.HasIndex(s => new { s.OfficeId, s.Name }).IsUnique();
-
-            entity.Property(c => c.Name).IsRequired().HasMaxLength(200);
-            entity.Property(c => c.Description).IsRequired().HasMaxLength(500);
-            entity.Property(c => c.Cost).IsRequired();
         });
-        
+
+        // Rating
         builder.Entity<Rating>(entity =>
         {
             entity.ToTable("Ratings");
             entity.HasKey(r => r.Id);
+
             entity.Property(r => r.Score).IsRequired();
             entity.Property(r => r.Comment).HasMaxLength(500);
-            
+            entity.Property(r => r.CreatedDate).HasColumnType("DATETIME");
+            entity.Property(r => r.CreatedAt).HasColumnType("DATETIME");
+            entity.Property(r => r.ModifiedDate).HasColumnType("DATETIME");
         });
-        
+
+        // User
         builder.Entity<User>(entity =>
         {
             entity.ToTable("Users");
@@ -80,13 +84,10 @@ public class WorkstationContext(DbContextOptions options) : DbContext(options)
             entity.Property(u => u.PhoneNumber).HasMaxLength(20);
             entity.Property(u => u.Email).HasMaxLength(100);
 
-            entity.Property(u => u.Role)
-                .IsRequired()
-                .HasConversion<int>(); 
-
-            entity.Property(u => u.CreatedAt).IsRequired();
+            entity.Property(u => u.Role).IsRequired().HasConversion<int>();
+            entity.Property(u => u.CreatedDate).HasColumnType("DATETIME");
+            entity.Property(u => u.CreatedAt).HasColumnType("DATETIME");
+            entity.Property(u => u.ModifiedDate).HasColumnType("DATETIME");
         });
-
-
     }
 }

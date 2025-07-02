@@ -139,8 +139,18 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<WorkstationContext>();
-    context.Database.EnsureCreated();
+
+    if (app.Environment.IsDevelopment())
+    {
+        context.Database.EnsureDeleted();    // ⚠️ Elimina la BD
+        context.Database.EnsureCreated();    // ✅ La vuelve a crear
+    }
+    else
+    {
+        context.Database.EnsureCreated();    // Solo crea si no existe
+    }
 }
+
 
 if (app.Environment.IsDevelopment())
 {
