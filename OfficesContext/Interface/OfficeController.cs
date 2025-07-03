@@ -134,28 +134,39 @@ public class OfficeController(IOfficeQueryService officeQueryService, IOfficeCom
     public async Task<IActionResult> CreateOfficeAsync([FromBody] CreateOfficeCommand command)
     {
         if (command == null) 
-            return BadRequest("Invalid office data.");
+        return BadRequest("Invalid office data.");
 
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+    if (!ModelState.IsValid)
+        return BadRequest(ModelState);
 
-        try
-        {
-            await _officeCommandService.Handle(command);
-            return StatusCode(StatusCodes.Status201Created, "Office created successfully.");
-        }
-        catch (NotServicesFoundException exception)
-        {
-            return BadRequest(exception.Message);
-        }
-        catch (DuplicateNameException)
-        {
-            return Conflict("An office with the same location already exists.");
-        }
-        catch (Exception ex)
-        {
-            return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
-        }
+    try
+    {
+        await _officeCommandService.Handle(command);
+        return StatusCode(StatusCodes.Status201Created, "Office created successfully.");
+    }
+    catch (FluentValidation.ValidationException ex)
+    {
+        var errors = ex.Errors
+            .GroupBy(e => e.PropertyName)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Select(e => e.ErrorMessage).ToArray()
+            );
+
+        return BadRequest(new { errors });
+    }
+    catch (NotServicesFoundException exception)
+    {
+        return BadRequest(new { errors = new { Services = new[] { exception.Message } } });
+    }
+    catch (DuplicateNameException)
+    {
+        return Conflict(new { errors = new { Location = new[] { "An office with the same location already exists." } } });
+    }
+    catch (Exception ex)
+    {
+        return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+    }
     }
 
     /// <summary>

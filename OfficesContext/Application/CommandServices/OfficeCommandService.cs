@@ -46,11 +46,14 @@ public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWor
     var validationResult = await _validator.ValidateAsync(command);
     if (!validationResult.IsValid)
     {
-        var errorMessages = validationResult.Errors
-            .Select(e => $"[{e.PropertyName}] {e.ErrorMessage}")
-            .ToList();
+        var errors = validationResult.Errors
+            .GroupBy(e => e.PropertyName)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Select(e => e.ErrorMessage).ToArray()
+            );
 
-        throw new ValidationException(string.Join(" | ", errorMessages));
+        throw new ValidationException("Validation failed", validationResult.Errors);
     }
 
     var existingOffice = await _officeRepository.GetByLocationAsync(command.Location);
