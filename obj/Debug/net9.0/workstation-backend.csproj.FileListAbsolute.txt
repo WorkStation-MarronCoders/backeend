@@ -988,3 +988,9 @@ h:\WebApi\Aplicacionesweb\backeend\obj\Debug\net9.0\refint\workstation-backend.d
 h:\WebApi\Aplicacionesweb\backeend\obj\Debug\net9.0\workstation-backend.pdb
 h:\WebApi\Aplicacionesweb\backeend\obj\Debug\net9.0\workstation-backend.genruntimeconfig.cache
 h:\WebApi\Aplicacionesweb\backeend\obj\Debug\net9.0\ref\workstation-backend.dll
+h:\WebApi\Aplicacionesweb\backeend\bin\Debug\net9.0\BCrypt.Net-Next.dll
+h:\WebApi\Aplicacionesweb\backeend\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+h:\WebApi\Aplicacionesweb\backeend\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+h:\WebApi\Aplicacionesweb\backeend\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+h:\WebApi\Aplicacionesweb\backeend\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+h:\WebApi\Aplicacionesweb\backeend\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll

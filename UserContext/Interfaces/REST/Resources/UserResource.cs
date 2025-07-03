@@ -8,4 +8,5 @@ public record class UserResource(Guid Id,
     string dni,
     string phoneNumber, 
     string email,
-    UserRole role);
+    UserRole role,
+    String password);

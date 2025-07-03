@@ -14,19 +14,19 @@ namespace workstation_backend.UserContext.Application.CommandServices;
 /// como creación, actualización y eliminación.
 /// </summary>
 public class UserCommandService(
-    IUserRepository userRepository, 
-    IUnitOfWork unitOfWork, 
-    IValidator<CreateUserCommand> validator) : IUserCommandService
+    IUserRepository userRepository,
+    IUnitOfWork unitOfWork,
+    IValidator<CreateUserCommand> validator, IHashService hashService, IJwtEncryptService jwtEncryptService) : IUserCommandService
 {
-    // Repositorio de usuarios para acceder a la persistencia.
     private readonly IUserRepository _userRepository =
         userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-    
-    // Unidad de trabajo para confirmar transacciones.
+
     private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
-    // Validador para la creación de usuarios.
     private readonly IValidator<CreateUserCommand> _validator = validator;
+
+    private readonly IHashService _hashService = hashService ?? throw new ArgumentNullException(nameof(hashService));
+    private readonly IJwtEncryptService _jwtEncryptService = jwtEncryptService ?? throw new ArgumentNullException(nameof(jwtEncryptService));
 
     /// <summary>
     /// Crea un nuevo usuario validando datos únicos y rol permitido.
@@ -41,44 +41,45 @@ public class UserCommandService(
     /// <exception cref="ArgumentOutOfRangeException">Si el rol del usuario no está entre los valores válidos.</exception>
 
     public async Task<User> Handle(CreateUserCommand command)
-{
-    ArgumentNullException.ThrowIfNull(command);
-
-    var validationResult = await validator.ValidateAsync(command);
-    if (!validationResult.IsValid)
     {
-        var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-        throw new ValidationException(string.Join(", ", errors));
+        ArgumentNullException.ThrowIfNull(command);
+
+        var validationResult = await validator.ValidateAsync(command);
+        if (!validationResult.IsValid)
+        {
+            var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
+            throw new ValidationException(string.Join(", ", errors));
+        }
+
+        var existingUser = await _userRepository.GetByDniAsync(command.Dni);
+        if (existingUser is not null)
+            throw new DuplicateNameException($"A user with DNI '{command.Dni}' already exists.");
+
+        var userWithSameEmail = await _userRepository.GetByEmailAsync(command.Email);
+        if (userWithSameEmail is not null)
+            throw new DuplicateNameException($"A user with email '{command.Email}' already exists.");
+
+        var userWithSamePhoneNumber = await _userRepository.GetByPhoneNumberAsync(command.PhoneNumber);
+        if (userWithSamePhoneNumber is not null)
+            throw new DuplicateNameException($"A user with phone number '{command.PhoneNumber}' already exists.");
+
+        if (!Enum.IsDefined(typeof(UserRole), command.Role))
+            throw new ArgumentOutOfRangeException(nameof(command.Role), "Invalid user role value.");
+
+        var user = new User(
+            command.FirstName,
+            command.LastName,
+            command.Dni,
+            command.PhoneNumber,
+            command.Email,
+            command.Role,
+            _hashService.HashPassword(command.PasswordHash));
+
+        await _userRepository.AddAsync(user);
+        await _unitOfWork.CompleteAsync();
+
+        return user;
     }
-
-    var existingUser = await _userRepository.GetByDniAsync(command.Dni);
-    if (existingUser is not null)
-        throw new DuplicateNameException($"A user with DNI '{command.Dni}' already exists.");
-
-    var userWithSameEmail = await _userRepository.GetByEmailAsync(command.Email);
-    if (userWithSameEmail is not null)
-        throw new DuplicateNameException($"A user with email '{command.Email}' already exists.");
-
-    var userWithSamePhoneNumber = await _userRepository.GetByPhoneNumberAsync(command.PhoneNumber);
-    if (userWithSamePhoneNumber is not null)
-        throw new DuplicateNameException($"A user with phone number '{command.PhoneNumber}' already exists.");
-
-    if (!Enum.IsDefined(typeof(UserRole), command.Role))
-        throw new ArgumentOutOfRangeException(nameof(command.Role), "Invalid user role value.");
-
-    var user = new User(
-        command.FirstName,
-        command.LastName,
-        command.Dni,
-        command.PhoneNumber,
-        command.Email,
-        command.Role);
-
-    await _userRepository.AddAsync(user);
-    await _unitOfWork.CompleteAsync();
-
-    return user;
-}
 
 
     /// <summary>
@@ -138,6 +139,18 @@ public class UserCommandService(
         await _unitOfWork.CompleteAsync();
 
         return true;
+    }
+
+    public async Task<string> Handle(LoginCommand command)
+    {
+        ArgumentNullException.ThrowIfNull(command);
+
+        var user = await _userRepository.GetByEmailAsync(command.Email);
+        if (user is null || !BCrypt.Net.BCrypt.Verify(command.PasswordHash, user.PasswordHash))
+            throw new UnauthorizedAccessException("Invalid email or password.");
+
+        var jwtToken = _jwtEncryptService.Encrypt(user);
+        return jwtToken;
     }
 
 }

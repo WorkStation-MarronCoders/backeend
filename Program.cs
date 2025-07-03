@@ -20,6 +20,7 @@ using workstation_backend.UserContext.Domain.Models.Validators;
 
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using workstation_backend.UserContext.Application.HashServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -98,6 +99,8 @@ builder.Services.AddValidatorsFromAssemblyContaining<OfficeServiceValidator>();
 builder.Services.AddScoped<IUserCommandService, UserCommandService>();
 builder.Services.AddScoped<IUserQueryService, UserQueryService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IHashService, HashService>();
+builder.Services.AddScoped<IJwtEncryptService, JwtEncryptService>();
 builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
 
 

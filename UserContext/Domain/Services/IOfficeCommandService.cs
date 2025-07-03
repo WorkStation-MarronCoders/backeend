@@ -29,6 +29,8 @@ public interface IUserCommandService
     /// </summary>
     /// <param name="command">Comando con el identificador del usuario a eliminar.</param>
     Task Handle(DeleteUserCommand command);
+
+    Task<string> Handle(LoginCommand command);
 }
 
 

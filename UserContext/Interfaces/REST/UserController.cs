@@ -7,6 +7,7 @@ using workstation_backend.UserContext.Domain.Models.Exceptions;
 using workstation_backend.UserContext.Domain.Models.Queries;
 using workstation_backend.UserContext.Domain.Services;
 using workstation_backend.UserContext.Interfaces.REST.Transform;
+using Microsoft.AspNetCore.Authorization;
 
 namespace workstation_backend.UserContext.Interfaces.REST;
 
@@ -16,7 +17,7 @@ namespace workstation_backend.UserContext.Interfaces.REST;
 [Route("api/workstation/[controller]")]
 [ApiController]
 [Produces("application/json")]
-public class UserController(IUserQueryService userQueryService, IUserCommandService userCommandService): ControllerBase
+public class UserController(IUserQueryService userQueryService, IUserCommandService userCommandService) : ControllerBase
 {
     private readonly IUserQueryService _userQueryService = userQueryService ?? throw new ArgumentNullException(nameof(userQueryService));
     private readonly IUserCommandService _userCommandService = userCommandService ?? throw new ArgumentNullException(nameof(userCommandService));
@@ -38,9 +39,9 @@ public class UserController(IUserQueryService userQueryService, IUserCommandServ
         {
             var query = new GetAllUsersQuery();
             var result = await _userQueryService.Handle(query);
-            
-            if(!result.Any()) return NotFound("No users found.");
-            
+
+            if (!result.Any()) return NotFound("No users found.");
+
             var resourcers = result.Select(UserResourceFromEntityAssembler.ToResourceFromEntity).ToList();
             return Ok(resourcers);
         }
@@ -68,7 +69,7 @@ public class UserController(IUserQueryService userQueryService, IUserCommandServ
     {
         if (id == Guid.Empty)
             return BadRequest("Invalid user ID.");
-        
+
         try
         {
             var query = new GetUserByIdQuery(id);
@@ -93,14 +94,14 @@ public class UserController(IUserQueryService userQueryService, IUserCommandServ
     /// <response code="400">Datos de entrada inválidos o usuario no encontrado</response>
     /// <response code="409">Ya existe un usuario con el mismo DNI</response>
     /// <response code="500">Error interno del servidor</response>
-    [HttpPost]
+    [HttpPost("sign-up")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
     {
-        if (command == null) 
+        if (command == null)
             return BadRequest("Invalid user data.");
 
         if (!ModelState.IsValid)
@@ -140,6 +141,7 @@ public class UserController(IUserQueryService userQueryService, IUserCommandServ
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [AllowAnonymous]
     public async Task<IActionResult> UpdateUser([FromRoute] Guid id, [FromBody] UpdateUserCommand updateUserCommand)
     {
         if (id == Guid.Empty)
@@ -190,6 +192,31 @@ public class UserController(IUserQueryService userQueryService, IUserCommandServ
             var command = new DeleteUserCommand(id);
             await _userCommandService.Handle(command);
             return NoContent();
+        }
+        catch (UserNotFoundException exception)
+        {
+            return NotFound(exception.Message);
+        }
+        catch (Exception ex)
+        {
+            return Problem(detail: ex.Message, statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    [HttpPost("login")]
+    [AllowAnonymous]
+    public async Task<IActionResult> Login([FromBody] LoginCommand command)
+    {
+        if (command == null)
+            return BadRequest("Invalid login data.");
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        try
+        {
+            var jwToken = await userCommandService.Handle(command);
+            return Ok(jwToken);
         }
         catch (UserNotFoundException exception)
         {

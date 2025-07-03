@@ -17,7 +17,7 @@ public class User : BaseEntity
     /// <param name="phoneNumber">Número de teléfono.</param>
     /// <param name="email">Correo electrónico del usuario.</param>
     /// <param name="role">Rol asignado al usuario.</param>
-    public User(string firstName, string lastName, string dni, string phoneNumber, string email, UserRole role)
+    public User(string firstName, string lastName, string dni, string phoneNumber, string email, UserRole role, String PasswordHash)
     {
         FirstName = firstName;
         LastName = lastName;
@@ -26,6 +26,7 @@ public class User : BaseEntity
         Email = email;
         Role = role;
         CreatedAt = DateTime.UtcNow;
+        this.PasswordHash = PasswordHash;
     }
 
     /// <summary>
@@ -62,6 +63,8 @@ public class User : BaseEntity
     /// Fecha y hora de creación del usuario (UTC).
     /// </summary>
     public DateTime CreatedAt { get; private set; }
+
+    public String PasswordHash { get; private set; }
 
     /// <summary>
     /// Actualiza los datos personales del usuario.
