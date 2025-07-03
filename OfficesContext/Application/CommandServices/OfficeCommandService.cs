@@ -20,8 +20,7 @@ public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWor
 
     private readonly IUnitOfWork _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
 
-    private readonly IValidator<CreateOfficeCommand> _validator = validator
-        ?? throw new ArgumentNullException(nameof(validator));
+    private readonly IValidator<CreateOfficeCommand> _validator = validator ?? throw new ArgumentNullException(nameof(validator));
 
     /// <summary>
     /// Maneja la creación de una nueva oficina, incluyendo validaciones de negocio y verificación de duplicados.
@@ -41,52 +40,40 @@ public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWor
     /// Si el costo diario supera los límites permitidos según la cantidad de servicios.
     /// </exception>
     public async Task<Office> Handle(CreateOfficeCommand command)
+{
+    ArgumentNullException.ThrowIfNull(command);
+
+    var validationResult = await _validator.ValidateAsync(command);
+    if (!validationResult.IsValid)
     {
-        ArgumentNullException.ThrowIfNull(command);
+        var errorMessages = validationResult.Errors
+            .Select(e => $"[{e.PropertyName}] {e.ErrorMessage}")
+            .ToList();
 
-        var validationResult = await validator.ValidateAsync(command);
-        if (!validationResult.IsValid)
-        {
-            var errors = validationResult.Errors.Select(e => e.ErrorMessage).ToList();
-            throw new ValidationException(string.Join(", ", errors));
-        }
-
-        var existingOffice = await _officeRepository.GetByLocationAsync(command.Location);
-        if (existingOffice != null)
-            throw new DuplicateNameException($"An office with this location '{command.Location}' already exists.");
-
-        if (command.Services == null || !command.Services.Any())
-        throw new ArgumentNullException(nameof(command.Services), "The office must have at least one service.");
-
-        const int MaxCostPerDay1 = 54;
-        const int MaxCostPerDay2 = 80;
-        int serviceCount = command.Services.Count;
-
-        if (serviceCount <= 2 && command.CostPerDay > MaxCostPerDay1)
-        {
-            throw new InvalidOperationException($"The daily cost cannot exceed {MaxCostPerDay1} when there are {serviceCount} or fewer services.");
-        }
-
-        if (serviceCount > 4 && command.CostPerDay > MaxCostPerDay2)
-        {
-            throw new InvalidOperationException($"The daily cost cannot exceed {MaxCostPerDay2} when there are more than 4 services.");
-        }
-
-        var office = new Office(command.Location, command.Capacity, command.CostPerDay, command.Available)
-        {
-            UserId = 1 
-        };
-
-        command.Services.ForEach(service =>
-        {
-            office.Services.Add(new OfficeService(service.Name, service.Description, service.Cost));
-        });
-
-        await _officeRepository.AddAsync(office);
-        await _unitOfWork.CompleteAsync();
-
-        return office;
+        throw new ValidationException(string.Join(" | ", errorMessages));
     }
+
+    var existingOffice = await _officeRepository.GetByLocationAsync(command.Location);
+    if (existingOffice != null)
+    {
+        throw new DuplicateNameException($"An office with this location '{command.Location}' already exists.");
+    }
+
+    var office = new Office(command.Location, command.Capacity, command.CostPerDay, command.Available)
+    {
+        UserId = 1 
+    };
+
+    foreach (var service in command.Services)
+    {
+        office.Services.Add(new OfficeService(service.Name, service.Description, service.Cost));
+    }
+
+    await _officeRepository.AddAsync(office);
+    await _unitOfWork.CompleteAsync();
+
+    return office;
+}
 
     /// <summary>
     /// Maneja la eliminación lógica de una oficina estableciendo su estado como inactivo.
