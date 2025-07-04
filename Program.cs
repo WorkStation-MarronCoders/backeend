@@ -108,7 +108,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("DevelopmentCorsPolicy", policy =>
     {
-        policy.WithOrigins("https://frontend-workstation.web.app/dashboard")
+        policy.WithOrigins("https://frontend-workstation.web.app")
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
