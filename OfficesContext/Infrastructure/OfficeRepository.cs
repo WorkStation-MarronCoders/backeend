@@ -22,4 +22,10 @@ public class OfficeRepository(WorkstationContext context) : BaseRepository<Offic
     {
         return await context.Set<Office>().FirstOrDefaultAsync(office => office.Location == location);
     }
+    public new async Task<IEnumerable<Office>> ListAsync()
+{
+    return await Context.Offices
+        .Include(o => o.Services)
+        .ToListAsync();
+}
 }
