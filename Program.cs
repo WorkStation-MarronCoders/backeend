@@ -106,17 +106,20 @@ builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("DevelopmentCorsPolicy", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowCredentials();
     });
 });
 
+
 var app = builder.Build();
 
-app.UseCors("AllowAll");
+app.UseCors("DevelopmentCorsPolicy");
+
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
