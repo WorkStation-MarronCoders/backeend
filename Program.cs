@@ -21,8 +21,35 @@ using workstation_backend.UserContext.Domain.Models.Validators;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using workstation_backend.UserContext.Application.HashServices;
+using workstation_backend.Shared.Infrastructure.Attribute.Middlewares;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+var jwtKey = builder.Configuration["Auth:key"];
+var keyBytes = Encoding.UTF8.GetBytes(jwtKey);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = true;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false, // cámbialo si usas issuer
+        ValidateAudience = false, // cámbialo si usas audience
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
+    };
+});
 
 builder.Services.AddControllers();
 
@@ -105,24 +132,31 @@ builder.Services.AddValidatorsFromAssemblyContaining<UserValidator>();
 
 
 builder.Services.AddCors(options =>
+
 {
-    options.AddPolicy("DevelopmentCorsPolicy", policy =>
+
+    options.AddPolicy("AllowAll", policy =>
+
     {
-        policy.WithOrigins(
-                "https://frontend-workstation.web.app",
-                "http://localhost:5173",
-                "http://localhost:4173"
-            )
+
+        policy
+
+            .AllowAnyOrigin()
+
             .AllowAnyHeader()
-            .AllowAnyMethod()
-            .AllowCredentials();
+
+            .AllowAnyMethod();
+
     });
+
 });
+
+ 
 
 
 var app = builder.Build();
-
-app.UseCors("DevelopmentCorsPolicy");
+app.UseMiddleware<ErrorHandlerMiddleware>();
+app.UseCors("AllowAll");
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -133,6 +167,8 @@ app.UseSwaggerUI(c =>
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
+app.UseAuthentication();
+
 app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
