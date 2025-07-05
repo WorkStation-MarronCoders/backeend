@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "H:\\WebApi\\Aplicacionesweb\\backeend\\workstation-backend.csproj": {}
+    "h:\\WebApi\\Aplicacionesweb\\backeend\\workstation-backend.csproj": {}
   },
   "projects": {
-    "H:\\WebApi\\Aplicacionesweb\\backeend\\workstation-backend.csproj": {
+    "h:\\WebApi\\Aplicacionesweb\\backeend\\workstation-backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "H:\\WebApi\\Aplicacionesweb\\backeend\\workstation-backend.csproj",
+        "projectUniqueName": "h:\\WebApi\\Aplicacionesweb\\backeend\\workstation-backend.csproj",
         "projectName": "workstation-backend",
-        "projectPath": "H:\\WebApi\\Aplicacionesweb\\backeend\\workstation-backend.csproj",
+        "projectPath": "h:\\WebApi\\Aplicacionesweb\\backeend\\workstation-backend.csproj",
         "packagesPath": "C:\\Users\\51924\\.nuget\\packages\\",
-        "outputPath": "H:\\WebApi\\Aplicacionesweb\\backeend\\obj\\",
+        "outputPath": "h:\\WebApi\\Aplicacionesweb\\backeend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\51924\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -66,11 +66,23 @@
             },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[9.0.5, )"
+              "version": "[9.0.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.6, )"
             },
             "Microsoft.EntityFrameworkCore.Relational": {
               "target": "Package",
-              "version": "[9.0.5, )"
+              "version": "[9.0.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.6, )"
             },
             "Microsoft.IdentityModel.Tokens": {
               "target": "Package",

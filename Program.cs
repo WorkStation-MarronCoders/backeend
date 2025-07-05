@@ -29,7 +29,7 @@ using Microsoft.IdentityModel.Tokens;
 var builder = WebApplication.CreateBuilder(args);
 
 
-var jwtKey = builder.Configuration["Auth:key"];
+var jwtKey = builder.Configuration["Jwt:key"];
 var keyBytes = Encoding.UTF8.GetBytes(jwtKey);
 
 builder.Services.AddAuthentication(options =>
