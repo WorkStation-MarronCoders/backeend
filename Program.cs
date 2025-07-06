@@ -30,6 +30,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 var jwtKey = builder.Configuration["Jwt:key"];
+if (string.IsNullOrWhiteSpace(jwtKey))
+    throw new Exception("JWT key is not set in configuration.");
+
+
 var keyBytes = Encoding.UTF8.GetBytes(jwtKey);
 
 builder.Services.AddAuthentication(options =>
@@ -176,7 +180,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<WorkstationContext>();
-    context.Database.EnsureCreated();
+    context.Database.Migrate();
 }
 
 app.Run();
