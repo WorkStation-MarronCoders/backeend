@@ -8,5 +8,5 @@ namespace workstation_backend.OfficesContext.Domain.Models.Commands;
 /// <param name="Capacity">Nueva capacidad máxima.</param>
 /// <param name="CostPerDay">Nuevo costo por día.</param>
 /// <param name="Available">Nueva disponibilidad.</param>
-public record UpdateOfficeCommand(Guid Id, string Location, int Capacity, int CostPerDay, bool Available);
+public record UpdateOfficeCommand(Guid Id, string Location, string Description, string ImageUrl, int Capacity, int CostPerDay, bool Available);
 

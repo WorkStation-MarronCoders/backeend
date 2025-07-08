@@ -24,6 +24,13 @@ public class WorkstationContext(DbContextOptions options) : DbContext(options)
             entity.Property(o => o.Location).IsRequired().HasMaxLength(200);
             entity.HasIndex(o => o.Location).IsUnique();
 
+            entity.Property(o => o.Description)
+            .IsRequired()
+            .HasMaxLength(500);
+
+            entity.Property(o => o.ImageUrl)
+            .HasMaxLength(300); 
+
             entity.Property(o => o.Capacity).IsRequired();
             entity.Property(o => o.CostPerDay).IsRequired();
             entity.Property(o => o.Available).IsRequired();

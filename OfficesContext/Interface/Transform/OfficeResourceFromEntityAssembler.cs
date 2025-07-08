@@ -15,6 +15,8 @@ public static class OfficeResourceFromEntityAssembler
         return new OfficeResource(
             office.Id,
             office.Location,
+            office.Description,
+            office.ImageUrl,
             office.Capacity,
             office.CostPerDay,
             office.Available,

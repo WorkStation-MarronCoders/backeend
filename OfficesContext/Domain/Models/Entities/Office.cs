@@ -15,9 +15,11 @@ public class Office : BaseEntity
     /// <param name="capacity">Capacidad máxima de personas.</param>
     /// <param name="costPerDay">Costo diario de alquiler.</param>
     /// <param name="available">Indica si la oficina está disponible actualmente.</param>
-    public Office(string location, int capacity, int costPerDay, bool available)
+    public Office(string location, string Description, string ImageUrl, int capacity, int costPerDay, bool available)
     {
         Location = location;
+        this.Description = Description;
+        this.ImageUrl = ImageUrl;
         Capacity = capacity;
         CostPerDay = costPerDay;
         IsActive = true;
@@ -34,6 +36,10 @@ public class Office : BaseEntity
     /// Ubicación física de la oficina (ej. distrito o dirección).
     /// </summary>
     public string Location { get; set; }
+
+    public string Description { get; set; }
+
+    public string ImageUrl { get; set; }
 
     /// <summary>
     /// Cantidad máxima de personas permitidas.

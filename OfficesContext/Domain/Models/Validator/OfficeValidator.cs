@@ -25,6 +25,18 @@ public class OfficeValidator : AbstractValidator<CreateOfficeCommand>
             .NotNull().WithMessage("Define a list of services.")
             .Must(x => x.Count > 0).WithMessage("Include at least one service.");
 
+        RuleFor(x => x.Description)
+            .NotEmpty().WithMessage("La descripción es obligatoria.")
+            .MaximumLength(500).WithMessage("La descripción no debe exceder los 500 caracteres.");
+
+        RuleFor(x => x.ImageUrl)
+            .Cascade(CascadeMode.Stop)
+            .NotEmpty().WithMessage("La URL de la imagen no puede estar vacía.")
+            .Must(BeAValidImageUrl)
+                .When(x => !string.IsNullOrWhiteSpace(x.ImageUrl))
+                .WithMessage("La URL debe ser válida y apuntar a una imagen (.jpg, .jpeg, .png o .webp).")
+            .MaximumLength(300).WithMessage("La URL de la imagen no debe exceder los 300 caracteres.");
+
         RuleForEach(x => x.Services).SetValidator(new OfficeServiceValidator());
 
         RuleFor(x => x)
@@ -42,5 +54,13 @@ public class OfficeValidator : AbstractValidator<CreateOfficeCommand>
                     context.AddFailure("CostPerDay", $"The daily cost cannot exceed 80 when there are more than 4 services.");
                 }
             });
+    }
+        private bool BeAValidImageUrl(string url)
+    {
+        if (!Uri.TryCreate(url, UriKind.Absolute, out var uriResult))
+            return false;
+
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+        return allowedExtensions.Any(ext => uriResult.AbsolutePath.EndsWith(ext, StringComparison.OrdinalIgnoreCase));
     }
 }

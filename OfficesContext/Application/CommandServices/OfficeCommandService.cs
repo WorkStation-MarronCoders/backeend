@@ -62,7 +62,7 @@ public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWor
         throw new DuplicateNameException($"An office with this location '{command.Location}' already exists.");
     }
 
-    var office = new Office(command.Location, command.Capacity, command.CostPerDay, command.Available)
+    var office = new Office(command.Location, command.Description, command.ImageUrl, command.Capacity, command.CostPerDay, command.Available)
     {
         UserId = 1 
     };
@@ -141,6 +141,8 @@ public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWor
         throw new InvalidOperationException("The office location can only be changed once every 6 months.");
 
     office.Location = command.Location;
+    office.Description = command.Description;
+    office.ImageUrl = command.ImageUrl;
     office.Capacity = command.Capacity;
     office.CostPerDay = command.CostPerDay;
     office.Available = command.Available;

@@ -8,5 +8,5 @@ namespace workstation_backend.OfficesContext.Domain.Models.Commands;
 /// <param name="CostPerDay">Costo por día de uso.</param>
 /// <param name="Available">Indica si la oficina está disponible.</param>
 /// <param name="Services">Lista de servicios ofrecidos.</param>
-public record CreateOfficeCommand(string Location, int Capacity, int CostPerDay, bool Available, List<OfficeServiceCommand> Services);
+public record CreateOfficeCommand(string Location, string Description, string ImageUrl, int Capacity, int CostPerDay, bool Available, List<OfficeServiceCommand> Services);
 
