@@ -37,9 +37,9 @@ public class Office : BaseEntity
     /// </summary>
     public string Location { get; set; }
 
-    public string Description { get; set; }
+    public string? Description { get; set; }
 
-    public string ImageUrl { get; set; }
+    public string? ImageUrl { get; set; }
 
     /// <summary>
     /// Cantidad máxima de personas permitidas.
