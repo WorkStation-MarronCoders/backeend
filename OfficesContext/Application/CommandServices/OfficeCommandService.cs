@@ -130,9 +130,6 @@ public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWor
     if (daysSinceCreated <= 2)
         throw new InvalidOperationException("The office cannot be updated until 2 days have passed since its creation.");
 
-    if (!office.Available)
-        throw new InvalidOperationException("The office must be available to perform updates.");
-
     bool isLocationChanged = !string.Equals(office.Location, command.Location, StringComparison.OrdinalIgnoreCase);
     var lastModified = office.ModifiedDate.GetValueOrDefault(office.CreatedDate);
     var monthsSinceModified = (DateTime.UtcNow - lastModified).TotalDays / 30.0;
