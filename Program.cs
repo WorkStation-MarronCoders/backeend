@@ -11,7 +11,6 @@ using workstation_backend.OfficesContext.Application.QueryServices;
 using workstation_backend.OfficesContext.Application.CommandServices;
 using workstation_backend.OfficesContext.Domain.Models.Validator;
 
-
 using workstation_backend.UserContext.Domain;
 using workstation_backend.UserContext.Infrastructure;
 using workstation_backend.UserContext.Domain.Services;
