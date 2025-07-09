@@ -93,10 +93,7 @@ public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWor
 
         var office = await _officeRepository.FindByIdAsync(command.Id);
         if (office is null) return false;
-
-        if (!office.Available)
-            throw new InvalidOperationException("Cannot delete an office that is currently in use or not available.");
-
+        
         office.IsActive = false;
         office.ModifiedDate = DateTime.UtcNow;
         office.UpdatedUserId = 87;
