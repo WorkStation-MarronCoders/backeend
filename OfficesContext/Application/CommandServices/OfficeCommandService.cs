@@ -116,6 +116,7 @@ public class OfficeCommandService(IOfficeRepository officeRepository, IUnitOfWor
     /// Si no han pasado al menos 2 días desde la creación de la oficina,
     /// si la oficina no está disponible,
     /// o si se intenta modificar la ubicación antes de 6 meses desde el último cambio.
+    /// waza
     /// </exception>
     /// 
     public async Task<bool> Handle(UpdateOfficeCommand command, Guid Id)
