@@ -178,9 +178,16 @@ app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {
-    var services = scope.ServiceProvider;
-    var context = services.GetRequiredService<WorkstationContext>();
-    context.Database.Migrate();
+    try
+    {
+        var services = scope.ServiceProvider;
+        var context = services.GetRequiredService<WorkstationContext>();
+        context.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error al aplicar migraciones: {ex.Message}");
+    }
 }
 
 app.Run();
