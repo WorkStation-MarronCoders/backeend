@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "H:\\WebApi\\Aplicacionesweb\\backeend\\workstation-backend.csproj": {}
+    "F:\\backeend\\workstation-backend.csproj": {}
   },
   "projects": {
-    "H:\\WebApi\\Aplicacionesweb\\backeend\\workstation-backend.csproj": {
+    "F:\\backeend\\workstation-backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "H:\\WebApi\\Aplicacionesweb\\backeend\\workstation-backend.csproj",
+        "projectUniqueName": "F:\\backeend\\workstation-backend.csproj",
         "projectName": "workstation-backend",
-        "projectPath": "H:\\WebApi\\Aplicacionesweb\\backeend\\workstation-backend.csproj",
-        "packagesPath": "C:\\Users\\51924\\.nuget\\packages\\",
-        "outputPath": "H:\\WebApi\\Aplicacionesweb\\backeend\\obj\\",
+        "projectPath": "F:\\backeend\\workstation-backend.csproj",
+        "packagesPath": "C:\\Users\\Rodrigo\\.nuget\\packages\\",
+        "outputPath": "F:\\backeend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\51924\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\Rodrigo\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -88,6 +88,10 @@
               "target": "Package",
               "version": "[8.12.1, )"
             },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[18.0.0, )"
+            },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[9.0.0, )"
@@ -99,6 +103,14 @@
             "MySql.EntityFrameworkCore": {
               "target": "Package",
               "version": "[9.0.3, )"
+            },
+            "NUnit": {
+              "target": "Package",
+              "version": "[4.4.0, )"
+            },
+            "NUnit3TestAdapter": {
+              "target": "Package",
+              "version": "[5.1.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -128,7 +140,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

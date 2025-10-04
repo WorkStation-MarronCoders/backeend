@@ -17,6 +17,13 @@ public class Office : BaseEntity
     /// <param name="available">Indica si la oficina está disponible actualmente.</param>
     public Office(string location, string Description, string ImageUrl, int capacity, int costPerDay, bool available)
     {
+        if (location == null)
+            throw new ArgumentNullException(nameof(location));
+        if (capacity <= 0)
+            throw new ArgumentException("Capacity must be greater than zero.", nameof(capacity));
+        if (costPerDay <= 0)
+            throw new ArgumentException("Cost per day must be greater than zero.", nameof(costPerDay));
+
         Location = location;
         this.Description = Description;
         this.ImageUrl = ImageUrl;
